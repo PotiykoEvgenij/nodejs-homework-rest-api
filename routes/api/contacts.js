@@ -23,4 +23,6 @@ router.delete('/:contactId', contactsController.deleteContact);
 
 router.put('/:contactId', contactsController.editContact);
 
+router.patch('/:contactId/favorite', contactsController.updateStatusContact);
+
 module.exports = router;

@@ -50,7 +50,7 @@
 //   updateContact,
 // }
 
-const Contact = require('./mongoosModel');
+const Contact = require('./mongoosSchema');
 
 const listContacts = async () => {
   return await Contact.find();

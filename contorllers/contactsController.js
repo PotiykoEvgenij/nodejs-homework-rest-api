@@ -84,11 +84,33 @@ const editContact = async (req, res, next) => {
             return res.status(404).json({ message: "Not found" });
         }
 
-        res.status(200).json(updateContact);
+        res.status(200).json(updatedContact);
     } catch (error) {
         next(error);
     }
     // res.json({ message: 'template message' })
+};
+
+const updateStatusContact = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const { favorite } = req.body;
+    console.log(req.body);
+
+    if (favorite === undefined) {
+      return res.status(400).json({ message: "Missing field favorite" });
+    }
+
+    const updatedContact = await updateContact(contactId, { favorite });
+
+    if (!updatedContact) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    res.status(200).json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
@@ -97,4 +119,5 @@ module.exports = {
     createContact,
     deleteContact,
     editContact,
+    updateStatusContact,
 };
