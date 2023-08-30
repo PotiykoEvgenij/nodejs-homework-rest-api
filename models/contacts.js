@@ -1,45 +1,75 @@
-const fs = require('fs/promises');
-const Joi = require('joi');
+// const fs = require('fs/promises');
+// const Joi = require('joi');
 
-const contactsFilePath = './models/contacts.json';
+// const contactsFilePath = './models/contacts.json';
+
+// const listContacts = async () => {
+//   const data = await fs.readFile(contactsFilePath, 'utf-8');
+//   return JSON.parse(data);
+// };
+
+// const getContactById = async (contactId) => {
+//   const contacts = await listContacts();
+//   return contacts.find((contact) => contact.id === contactId) || null;
+// };
+
+// const removeContact = async (contactId) => {
+//   const contacts = await listContacts();
+//   const updateContacts = contacts.filter((contact) => contact.id !== contactId);
+//   await fs.writeFile(contactsFilePath, JSON.stringify(updateContacts, null, 2));
+// };
+
+// const addContact = async (body) => {
+//   const contacts = await listContacts();
+//   const newContact = { ...body, id: Date.now().toString() };
+//   contacts.push(newContact);
+//   await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
+//   return newContact;
+// };
+
+// const updateContact = async (contactId, body) => {
+//   const contacts = await listContacts();
+//   const index = contacts.findIndex((contact) => contact.id === contactId);
+
+//   if (index === -1) {
+//     return null;
+//   }
+
+//   const updatedContact = { ...contacts[index], ...body };
+//   contacts[index] = updatedContact;
+//   await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
+
+//   return updatedContact;
+// };
+
+// module.exports = {
+//   listContacts,
+//   getContactById,
+//   removeContact,
+//   addContact,
+//   updateContact,
+// }
+
+const Contact = require('./mongoosSchema');
 
 const listContacts = async () => {
-  const data = await fs.readFile(contactsFilePath, 'utf-8');
-  return JSON.parse(data);
+  return await Contact.find();
 };
 
 const getContactById = async (contactId) => {
-  const contacts = await listContacts();
-  return contacts.find((contact) => contact.id === contactId) || null;
+  return await Contact.findById(contactId);
 };
 
 const removeContact = async (contactId) => {
-  const contacts = await listContacts();
-  const updateContacts = contacts.filter((contact) => contact.id !== contactId);
-  await fs.writeFile(contactsFilePath, JSON.stringify(updateContacts, null, 2));
+  return await Contact.findByIdAndRemove(contactId);
 };
 
 const addContact = async (body) => {
-  const contacts = await listContacts();
-  const newContact = { ...body, id: Date.now().toString() };
-  contacts.push(newContact);
-  await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
-  return newContact;
+  return await Contact.create(body);
 };
 
 const updateContact = async (contactId, body) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-
-  if (index === -1) {
-    return null;
-  }
-
-  const updatedContact = { ...contacts[index], ...body };
-  contacts[index] = updatedContact;
-  await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
-
-  return updatedContact;
+  return await Contact.findByIdAndUpdate(contactId, body, { new: true });
 };
 
 module.exports = {
@@ -48,4 +78,4 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
-}
+};
