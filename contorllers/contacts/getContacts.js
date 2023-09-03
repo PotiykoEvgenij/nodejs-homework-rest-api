@@ -1,7 +1,6 @@
 const { listContacts } = require('../../models/contacts');
 
 const getContacts = async (req, res, next) => {
-  const userId = req.user.id;
   try {
     // const contacts = await listContacts.find({ ownerId: userId }).exec();
     const contacts = await listContacts(req);
