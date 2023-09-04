@@ -6,7 +6,7 @@ const getContact = async (req, res, next) => {
     const contact = await getContactById(req, req.params.contactId);
 
     if (!contact) {
-      return res.status(404).json({ message: "Not found" });
+      return res.status(404).json({ message: "Contact not found" });
     }
 
     const ownerIdAsString = contact.ownerId.toString();

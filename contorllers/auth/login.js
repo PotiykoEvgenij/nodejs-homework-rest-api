@@ -22,6 +22,8 @@ async function login(req, res, next) {
         const token = jwt.sign({ id: user._id, email: user.email, subscription: user.subscription }, process.env.JWT_SECRET, { expiresIn: 1800 });
         console.log(token);
 
+        await User.findByIdAndUpdate(user._id, { token });
+
         return res.status(200).send({ token });
 
     } catch (error) {
