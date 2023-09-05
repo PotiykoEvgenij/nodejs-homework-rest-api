@@ -11,5 +11,6 @@ router.post('/register', jsonParser, AuthController.register);
 router.post('/login', jsonParser, AuthController.login);
 router.post('/logout', auth, AuthController.logout);
 router.get('/current', auth, AuthController.current);
+router.patch('/avatar', auth, AuthController.avatar);
 
 module.exports = router;
