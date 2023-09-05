@@ -1,75 +1,30 @@
-// const fs = require('fs/promises');
-// const Joi = require('joi');
-
-// const contactsFilePath = './models/contacts.json';
-
-// const listContacts = async () => {
-//   const data = await fs.readFile(contactsFilePath, 'utf-8');
-//   return JSON.parse(data);
-// };
-
-// const getContactById = async (contactId) => {
-//   const contacts = await listContacts();
-//   return contacts.find((contact) => contact.id === contactId) || null;
-// };
-
-// const removeContact = async (contactId) => {
-//   const contacts = await listContacts();
-//   const updateContacts = contacts.filter((contact) => contact.id !== contactId);
-//   await fs.writeFile(contactsFilePath, JSON.stringify(updateContacts, null, 2));
-// };
-
-// const addContact = async (body) => {
-//   const contacts = await listContacts();
-//   const newContact = { ...body, id: Date.now().toString() };
-//   contacts.push(newContact);
-//   await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
-//   return newContact;
-// };
-
-// const updateContact = async (contactId, body) => {
-//   const contacts = await listContacts();
-//   const index = contacts.findIndex((contact) => contact.id === contactId);
-
-//   if (index === -1) {
-//     return null;
-//   }
-
-//   const updatedContact = { ...contacts[index], ...body };
-//   contacts[index] = updatedContact;
-//   await fs.writeFile(contactsFilePath, JSON.stringify(contacts, null, 2));
-
-//   return updatedContact;
-// };
-
-// module.exports = {
-//   listContacts,
-//   getContactById,
-//   removeContact,
-//   addContact,
-//   updateContact,
-// }
-
 const Contact = require('./mongoosSchema');
+// const userId = req.user.id;
 
-const listContacts = async () => {
-  return await Contact.find();
+const listContacts = async (req) => {
+  const userId = req.user.id;
+  console.log(userId);
+  return await Contact.find({ ownerId: userId });
 };
 
-const getContactById = async (contactId) => {
-  return await Contact.findById(contactId);
+const getContactById = async (req, contactId) => {
+  const userId = req.user.id;
+  return await Contact.findById(contactId).where({ ownerId: userId });
 };
 
-const removeContact = async (contactId) => {
-  return await Contact.findByIdAndRemove(contactId);
+const removeContact = async (req, contactId) => {
+  const userId = req.user.id;
+  return await Contact.findByIdAndRemove(contactId).where({ ownerId: userId });
 };
 
-const addContact = async (body) => {
-  return await Contact.create(body);
+const addContact = async (req, body) => {
+  const userId = req.user.id;
+  return await Contact.create({...body, ownerId: userId});
 };
 
-const updateContact = async (contactId, body) => {
-  return await Contact.findByIdAndUpdate(contactId, body, { new: true });
+const updateContact = async (req, contactId, body) => {
+  const userId = req.user.id;
+  return await Contact.findByIdAndUpdate(contactId, body, { new: true }).where({ ownerId: userId });
 };
 
 module.exports = {
