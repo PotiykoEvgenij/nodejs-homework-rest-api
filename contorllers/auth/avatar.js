@@ -5,8 +5,6 @@ const User = require('../../models/user');
 
 async function avatar(req, res, next) {
     try {
-        console.log(req.user);
-        // const user = req.user;
         const userId = req.user.id;
         const file = req.file;
 
@@ -26,10 +24,10 @@ async function avatar(req, res, next) {
         await image.writeAsync(avatarPath);
         
         const avatarURL = `http://localhost:3000/avatars/${avatarFileName}`
-        console.log(avatarPath)
+        // console.log(avatarPath)
 
         user.avatar = avatarURL;
-        console.log(user.avatar);
+        // console.log(user.avatar);
         await User.updateOne({ _id: userId }, { avatar: avatarURL });
 
         res.status(200).send({ avatarURL: `${avatarURL}` });
