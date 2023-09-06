@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -21,7 +22,8 @@ app.use(express.json());
 const auth = require('./middleware/auth');
 
 app.use('/api/contacts', auth, contactsRouter);
-app.use('/api/users', authRouter)
+app.use('/api/users', authRouter);
+app.use('/avatars', express.static(path.join(__dirname, 'public', 'avatars')));
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not found' })
