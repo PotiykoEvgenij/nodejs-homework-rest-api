@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const generateAvatar = require('../middleware/generateAvatar');
+
 const userSchema = new mongoose.Schema({
     password: {
         type: String,
@@ -15,12 +17,15 @@ const userSchema = new mongoose.Schema({
         enum: ["starter", "pro", "business"],
         default: "starter"
     },
+    avatar: String,
     token: String,
-    
-    // {
-    //     type: String,
-    //     default: null,
-    // },
+});
+
+userSchema.pre('save', function (next) {
+    const email = this.email;
+    const avatar = generateAvatar(email);
+    this.avatar = avatar;
+    next();
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -37,6 +37,7 @@ function auth(req, res, next) {
             id: user.id,
             email: user.email,
             subscription: user.subscription,
+                avatar: user.avatar,
             // userId: decode.Id,
             };
 
