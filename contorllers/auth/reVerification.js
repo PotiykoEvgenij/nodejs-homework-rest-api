@@ -1,26 +1,26 @@
 require('dotenv').config();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
 
-const User = require('../../models/user');
 const sendEmail = require('../../mailtrap/sendEmail');
+
 const URL = process.env.URL;
 
-async function register(req, res, next) {
-    const { password, email, subscription } = req.body;
+const User = require('../../models/user');
 
-    try {
-        const user = await User.findOne({ email }).exec();
+async function reVerification(req, res, next) {
+    const { email } = req.body;
 
-        if (user !== null) {
-            return res.status(409).send({ message: "User already exist" });
+    try {        
+        if (!email) {
+            return res.status(400).send({ message: "missing required field email" });
         };
 
-        const passwordHash = await bcrypt.hash(password, 10);
-        const verificationToken = uuidv4();
+        const user = await User.findOne({ email }).exec();
 
-        await User.create({ password: passwordHash, email, subscription, verificationToken });
+        if (user.verify) {
+            return res.status(400).send({ message: "Verification has already been passed" });
+        };
+        
+        const verificationToken = user.verificationToken;
 
         await sendEmail({
             to: email,
@@ -50,10 +50,10 @@ async function register(req, res, next) {
             text: `${URL}${verificationToken}`,
         });
 
-        res.status(201).send({ message: "Registration successful" });
+        res.status(200).send({ message: "Verification email sent" });
     } catch (error) {
-        next(error);
+        next(error)
     }
 };
 
-module.exports = register;
+module.exports = reVerification; 

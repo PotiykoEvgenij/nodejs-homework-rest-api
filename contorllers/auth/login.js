@@ -13,6 +13,10 @@ async function login(req, res, next) {
             return res.status(401).send({ message: "Email or password is incorrect" });
         }
 
+        if (user.verify === false) {
+            return res.status(401).send({ message: "Please verify your email" });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (isMatch !== true) {
